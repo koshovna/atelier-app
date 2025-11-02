@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИС Ателье</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Ателье</div>
+        <nav class="nav">
+            <a href="#" class="nav-link active" data-page="orders">Заказы</a>
+            <a href="#" class="nav-link" data-page="clients">Клиенты</a>
+            <a href="#" class="nav-link" data-page="analytics">Аналитика</a>
+        </nav>
+        <button id="logoutBtn" class="btn btn-danger">Выход</button>
+    </div>
+
+    <div class="container">
+        <!-- Страница Заказы -->
+        <div id="ordersPage" class="page active">
+            <div class="orders-topbar">
+                <h2 class="orders-title">Управление заказами</h2>
+                <div class="toolbar-right">
+                    <label>Сортировать по:</label>
+                    <select id="sortSelect">
+                        <option value="">Выберите</option>
+                        <option value="client_surname">Фамилия клиента</option>
+                        <option value="order_number">Номер заказа</option>
+                        <option value="order_date">Дата приема</option>
+                        <option value="completion_date">Дата выполнения</option>
+                        <option value="cost">Стоимость</option>
+                    </select>
+                </div>
+            </div>
+
+            <table id="ordersTable" class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Фамилия клиента</th>
+                        <th>Номер заказа</th>
+                        <th>Наименование изделия</th>
+                        <th>Дата приема</th>
+                        <th>Дата выполнения</th>
+                        <th>Фамилия мастера</th>
+                        <th>Стоимость</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                </tbody>
+            </table>
+
+            <div class="orders-buttons-row">
+                <div class="orders-buttons">
+                    <button id="addOrderBtn" class="btn btn-primary">Добавить</button>
+                    <button id="editOrderBtn" class="btn btn-secondary" disabled>Редактировать</button>
+                    <button id="deleteOrderBtn" class="btn btn-danger" disabled>Удалить</button>
+                </div>
+                <div class="function-group">
+                    <button id="deleteByClientBtn" class="btn btn-primary">Удалить по фамилии клиента</button>
+                </div>
+            </div>
+        </div>
+        <!-- Страница Клиенты -->
+        <div id="clientsPage" class="page">
+            <div class="clients-topbar">
+                <h2 class="clients-title">Клиенты</h2>
+                <div class="toolbar-right">
+                    <label>Сортировать по:</label>
+                    <select id="clientSortSelect">
+                        <option value="client_surname">Фамилия клиента</option>
+                        <option value="order_number">Номер заказа</option>
+                        <option value="duration">Продолжительность</option>
+                    </select>
+                </div>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Фамилия клиента</th>
+                        <th>Номер заказа</th>
+                        <th>Продолжительность (дней)</th>
+                    </tr>
+                </thead>
+                <tbody id="clientsTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Страница Аналитика -->
+        <div id="analyticsPage" class="page">
+            <h2>Аналитика</h2>
+            
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>Заказы по мастеру</h3>
+                    <input type="text" id="masterInput" placeholder="Введите фамилию мастера">
+                    <button id="searchMasterBtn" class="btn btn-primary">Найти</button>
+                    <div id="masterResult" class="result"></div>
+                </div>
+
+                <div class="analytics-card">
+                    <h3>Максимальная стоимость заказа</h3>
+                    <div id="maxCostResult" class="result"></div>
+                </div>
+
+                <div class="analytics-card">
+                    <h3>Средняя стоимость заказов</h3>
+                    <div id="avgCostResult" class="result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для добавления/редактирования заказа -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Добавить заказ</h2>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label>Фамилия клиента:</label>
+                    <input type="text" id="clientSurname" required>
+                </div>
+                <div class="form-group">
+                    <label>Номер заказа:</label>
+                    <input type="text" id="orderNumber" required readonly>
+                </div>
+                <div class="form-group">
+                    <label>Наименование изделия:</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label>Дата приема заказа:</label>
+                    <input type="date" id="orderDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Дата выполнения:</label>
+                    <input type="date" id="completionDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Фамилия мастера:</label>
+                    <input type="text" id="masterSurname" required>
+                </div>
+                <div class="form-group">
+                    <label>Стоимость:</label>
+                    <input type="number" id="cost" step="0.01" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Модальное окно для удаления по фамилии клиента -->
+    <div id="deleteClientModal" class="modal">
+        <div class="modal-content">
+            <span class="close-delete">&times;</span>
+            <h2>Удалить заказы по фамилии клиента</h2>
+            <form id="deleteClientForm">
+                <div class="form-group">
+                    <label>Фамилия клиента:</label>
+                    <input type="text" id="deleteClientSurname" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-warning">Удалить</button>
+                    <button type="button" class="btn btn-secondary" id="cancelDeleteClientBtn">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

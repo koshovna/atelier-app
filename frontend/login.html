@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИС Ателье</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="i80.png" alt="Логотип Ателье" class="app-logo"/>
+            <h1 class="logo-text">Ателье</h1>
+        </div>
+        
+        <form id="loginForm" class="login-form">
+            <div class="form-group">
+                <label for="username">Логин</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <div id="errorMessage" class="error-message"></div>
+            
+            <button type="submit" class="btn btn-primary btn-block">Войти</button>
+            <button id="aboutBtn" class="btn btn-primary btn-block" type="button" style="margin-top:6px;">О программе</button>
+        </form>
+    </div>
+    <!-- Модальное окно "О программе" -->
+<div id="aboutModal" class="modal">
+    <div class="modal-content about-modal-content">
+        <span class="close-about">&times;</span>
+        <div class="about-flex">
+            <img src="seamstress.gif" class="about-image">
+            <div class="about-text">
+                <h3>Информация о программе 'ИС Ателье'</h3>
+                <p class="about-meta">
+                    Версия программы: v2.3<br>
+                    Разработала: Суслова Виолетта Владимировна<br>
+                    Дата выпуска: 02.11.2025г.
+                </p>
+                <div class="about-description">
+                    Программное средство <b>"ИС Ателье"</b> предназначено для учёта заказов и клиентов ателье.<br>
+                    <br>
+                    В разработанном ПО доступны функции:
+                    <ul>
+                        <li>добавления / удаления записей</li>
+                        <li>поиск, фильтрация, аналитика</li>
+                        <li>работа с клиентами и мастерами</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div style="display:flex; justify-content:center; margin-top:16px;">
+            <button id="aboutOkBtn" class="btn btn-primary" type="button">OK</button>
+        </div>
+    </div>
+</div>
+
+
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Используем новый API вместо remote
+                    window.electronAPI.openMainWindow();
+                } else {
+                    errorMessage.textContent = data.message;
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Ошибка подключения к серверу';
+                errorMessage.style.display = 'block';
+                console.error('Error:', error);
+            }
+        });
+        // О программе
+        const aboutBtn = document.getElementById('aboutBtn');
+        const aboutModal = document.getElementById('aboutModal');
+        const closeAboutBtn = document.querySelector('.close-about');
+        const aboutOkBtn = document.getElementById('aboutOkBtn');
+
+        aboutBtn.onclick = () => aboutModal.style.display = 'block';
+        closeAboutBtn.onclick = () => aboutModal.style.display = 'none';
+        aboutOkBtn.onclick = () => aboutModal.style.display = 'none';
+        window.onclick = (event) => {
+            if (event.target == aboutModal) aboutModal.style.display = 'none';
+        };
+    </script>
+</body>
+</html>
