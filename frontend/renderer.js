@@ -49,7 +49,7 @@ async function loadOrders(sortBy = '') {
             row.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${order.client_surname}</td>
-                <td>${order.order_number}</td>
+                <td>${order.order_number.slice(0, 8)}</td>
                 <td>${order.product_name}</td>
                 <td>${order.order_date}</td>
                 <td>${order.completion_date}</td>
@@ -110,7 +110,7 @@ document.getElementById('addOrderBtn').addEventListener('click', () => {
     document.getElementById('modalTitle').textContent = 'Добавить заказ';
     document.getElementById('orderForm').reset();
     selectedOrderId = null;
-    document.getElementById('orderNumber').value = generateOrderNumber();
+    document.getElementById('orderNumber').value = ""; // Поле пустое, UUID придёт с сервера
     document.getElementById('orderNumber').readOnly = true;
     modal.style.display = 'block';
 });
