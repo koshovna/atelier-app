@@ -3,6 +3,7 @@ from flask_cors import CORS
 from database import Database
 from datetime import datetime
 import sqlite3
+import uuid
 
 app = Flask(__name__)
 CORS(app)
@@ -49,13 +50,21 @@ def add_order():
     cursor = conn.cursor()
     
     try:
+        order_number = str(uuid.uuid4())
+
         cursor.execute('''
             INSERT INTO orders (client_surname, order_number, product_name, 
                               order_date, completion_date, master_surname, cost)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (data['client_surname'], data['order_number'], data['product_name'],
-              data['order_date'], data['completion_date'], data['master_surname'], 
-              data['cost']))
+        ''', (
+            data['client_surname'],
+            order_number,  # <-- теперь сюда подставляем UUID!
+            data['product_name'],
+            data['order_date'],
+            data['completion_date'],
+            data['master_surname'],
+            data['cost']
+        ))
         conn.commit()
         return jsonify({'success': True, 'message': 'Заказ добавлен'})
     except sqlite3.IntegrityError:
