@@ -1,4 +1,5 @@
 import sqlite3
+import uuid
 from datetime import datetime
 
 class Database:
@@ -47,21 +48,21 @@ class Database:
         
         # Добавляем данные
         test_orders = [
-            ('Иванов', 'ORD001', 'Платье', '2025-10-01', '2025-10-15', 'Петрова', 5000.0),
-            ('Сидоров', 'ORD002', 'Костюм', '2025-10-05', '2025-10-20', 'Смирнова', 8000.0),
-            ('Петров', 'ORD003', 'Юбка', '2025-10-10', '2025-10-18', 'Петрова', 3000.0),
-            ('Козлов', 'ORD004', 'Брюки', '2025-10-12', '2025-10-25', 'Иванова', 4500.0),
+            ('Суслова', str(uuid.uuid4()), 'Платье', '2025-10-01', '2025-10-15', 'Петрова', 25000.0),
+            ('Беспалов', str(uuid.uuid4()), 'Костюм', '2025-10-05', '2025-10-20', 'Смирнова', 10000.0),
+            ('Дударь', str(uuid.uuid4()), 'Джинсы', '2025-10-10', '2025-10-18', 'Петрова', 3000.0),
+            ('Савин', str(uuid.uuid4()), 'Брюки', '2025-10-12', '2025-10-25', 'Иванова', 4500.0),
         ]
-        
-        for order in test_orders:
-            try:
-                cursor.execute('''
-                    INSERT INTO orders (client_surname, order_number, product_name, 
-                                      order_date, completion_date, master_surname, cost)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                ''', order)
-            except sqlite3.IntegrityError:
-                pass
-        
+
+        # test_orders = [
+        #     ...
+        # ]
+
+        # for order in test_orders:
+        #     try:
+        #         cursor.execute(...)
+        #     except sqlite3.IntegrityError:
+        #         pass
+
         conn.commit()
         conn.close()
